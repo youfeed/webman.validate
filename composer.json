@@ -1,0 +1,16 @@
+{
+  "name": "youloge/webman.validate",
+  "type": "library",
+  "license": "MIT",
+  "description": "Webman plugin youloge/webman.validate",
+  "require": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Youloge\\Webman.validate\\": "src"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  }
+}
