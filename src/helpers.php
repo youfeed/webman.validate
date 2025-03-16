@@ -21,7 +21,7 @@
 */
 
 if(!function_exists('useValidator')){
-  function useValidator($params, $rules,$intersect = true){
+    function useValidator($params, $rules,$intersect = true){
         $presets = [
             // 基本处理
             'required' => function($field,$param,$args,$msg='%s 字段不能为空'){
@@ -37,7 +37,7 @@ if(!function_exists('useValidator')){
                 return (bool)($param)??$args;
             },
             'float'=>function($field,$param,$args,$msg=''){
-                return (float)($param)??$args;
+                return (float)($param);
             },
             'string'=>function($field,$param,$args,$msg=''){
                 return (string)($param)??$args;
@@ -87,16 +87,16 @@ if(!function_exists('useValidator')){
                 $minTimestamp = strtotime('1970-01-01'); // 0
                 $maxTimestamp = strtotime('2099-01-01'); // 4070908800000 32位是2038-01-19
                 if($param <= $minTimestamp || $param >= $maxTimestamp){
-                    return  new Exception(sprintf($msg,$field));
+                throw new Exception(sprintf($msg,$field));
                 }
                 return $param;
             },
             'idcard'=>function($field,$param,$args,$msg='%s 字段值必须是身份证号 %s'){
                 if(strlen($param)!==18){
-                    return  new Exception(sprintf($msg,$field,'长度不足'));
+                throw new Exception(sprintf($msg,$field,'长度不足'));
                 }
                 if(preg_match('/^\d{17}[\dXx]$/', $param) == false){
-                    return  new Exception(sprintf($msg,$field,'格式错误'));
+                throw new Exception(sprintf($msg,$field,'格式错误'));
                 }
                 // 加权因子
                 $weightFactors = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
@@ -110,19 +110,19 @@ if(!function_exists('useValidator')){
                 $mod = $sum % 11;
                 $checkCode = $checkCodes[$mod];
                 if(strtoupper($param[17]) !== $checkCode){
-                    return  new Exception(sprintf($msg,$field,'校验错误'));
+                throw new Exception(sprintf($msg,$field,'校验错误'));
                 }
                 return $param;
             },
             'regex'=>function($field,$param,$args,$msg='%s 字段值格式错误'){
                 if(preg_match($args, $param) === false){
-                    return  new Exception(sprintf($msg,$field));
+                throw new Exception(sprintf($msg,$field));
                 }
                 return $param;
             },
             'test'=>function($field,$param,$args,$msg='%s 字段值格式错误'){
                 if(preg_match($args, $param) === false){
-                    return  new Exception(sprintf($msg,$field));
+                throw new Exception(sprintf($msg,$field));
                 }
                 return $param;
             },
@@ -132,7 +132,7 @@ if(!function_exists('useValidator')){
                 if(is_numeric($param) && $param >= $min){
                     return $param;
                 }
-                return  new Exception(sprintf($msg,$field,$min));
+                throw new Exception(sprintf($msg,$field,$min));
                 
             },
             'max'=>function($field,$param,$args,$msg='%s 字段数字不能大于%s'){
@@ -140,66 +140,66 @@ if(!function_exists('useValidator')){
                 if(is_numeric($param) && ($param <= $max)){
                     return $param;
                 }
-                return  new Exception(sprintf($msg,$field,$max));
+                throw new Exception(sprintf($msg,$field,$max));
             },
             'between' => function($field,$param,$args,$msg='%s 字段数字必须在%s和%s之间'){
                 $conf = explode(',',$args);$min = min($conf);$max = max($conf);
                 if(is_numeric($param) && $param >= $min && $param <= $max){
                     return $param;
                 }
-                return  new Exception(sprintf($msg,$field,$min,$max));
+                throw new Exception(sprintf($msg,$field,$min,$max));
             },
             // 字符串相关
             'start' => function($field,$param,$args,$msg='%s 字段值必须以%s开头'){
                 if(str_starts_with($param, $args)){
                     return $param;
                 }
-                return  new Exception(sprintf($msg,$field,$args));
+                throw new Exception(sprintf($msg,$field,$args));
             },
             'end' => function($field,$param,$args,$msg='%s 字段值必须以%s结尾'){
                 if(str_ends_with($param, $args)){
                     return $param; 
                 }
-                return  new Exception(sprintf($msg,$field,$args));
+                throw new Exception(sprintf($msg,$field,$args));
             },
             'digit' => function($field,$param,$args,$msg='%s 字段值必须是数字'){
                 if(ctype_digit($param)){
                     return $param;
                 }
-                return  new Exception(sprintf($msg,$field));
+                throw new Exception(sprintf($msg,$field));
             },
             'alpha'=>function($field,$param,$args,$msg='%s 字段值必须是字母'){
                 if(ctype_alpha($param)){
                     return $param;
                 }
-                return  new Exception(sprintf($msg,$field));
+                throw new Exception(sprintf($msg,$field));
             },
             'alphanum'=>function($field,$param,$args,$msg='%s 字段值必须是字母和数字'){
                 if(ctype_alnum($param)){
                     return $param;
                 }
-                return  new Exception(sprintf($msg,$field));
+                throw new Exception(sprintf($msg,$field));
             },
             'length'=>function($field,$param,$args,$msg='%s 字段长度必须%s~%s个字符'){
                 $conf = explode(',',$args);$min = min($conf);$max = max($conf);$len = mb_strlen($param);
                 if($len >= $min && $len <= $max){
                     return $param;
                 }
-                return  new Exception(sprintf($msg,$field,$min,$max));
+                throw new Exception(sprintf($msg,$field,$min,$max));
             },
             'in' => function($field,$param,$args,$msg='%s 字段值必须在%s范围中'){
                 $conf = explode(',',$args);
                 if(in_array($param,$conf)){
                     return $param;
                 }
-                return  new Exception(sprintf($msg,$field,$args));
+                throw new Exception(sprintf($msg,$field,$args));
             },
             'not' => function($field,$param,$args,$msg='%s 字段值不能在%s范围中'){
                 $conf = explode(',',$args);
                 if(in_array($param,$conf) == false){
                     return $param;
                 }
-                return  new Exception(sprintf($msg,$field,$args));
+                throw new Exception(sprintf($msg,$field,$args));
             },
             'count'=>function($field,$param,$args,$msg='%s 字段值数量必须%s~%s个'){
                 $conf = explode(',',$args);$min = min($conf);$max = max($conf);
@@ -207,7 +207,7 @@ if(!function_exists('useValidator')){
                 if(is_array($param) && count($param) >= $min && count($param) <= $max){
                     return $param;
                 }
-                return  new Exception(sprintf($msg,$field,$min,$max));
+                throw new Exception(sprintf($msg,$field,$min,$max));
             }
         ];
         // continue  break
