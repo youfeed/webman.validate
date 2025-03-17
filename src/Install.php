@@ -1,5 +1,5 @@
 <?php
-namespace Youloge\Webman\tool;
+namespace Youloge\Webman\validate;
 
 class Install
 {
@@ -9,7 +9,7 @@ class Install
      * @var array
      */
     protected static $pathRelation = array (
-    'config/plugin/youloge/webman.validate' => 'config/plugin/youloge/webman.validate',
+    'config/plugin/youloge/validate' => 'config/plugin/youloge/validate',
     );
 
     /**

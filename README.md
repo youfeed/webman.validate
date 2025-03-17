@@ -11,11 +11,13 @@
 
 ### 项目地址
 
-[Github Youloge.Validate](https://github.com/youfeed/webman.validate) Star我 `如果对你的项目有帮助` 欢迎打赏~
+[Youloge.Validate](https://github.com/youfeed/webman.validate) Star我 `如果对你的项目有帮助` 欢迎打赏~
 
 ###  安装使用
 
-> `composer require youloge/webman.validate` 函数名称 `useValidate()`
+> `composer require youloge/webman.validate` 
+
+> 函数名称 `useValidate()`
 
 ### 使用说明
 
