@@ -264,7 +264,7 @@ if(!function_exists('useValidate')){
                     @[$ruleName, $ruleParam] = explode(':', $singleRule,2);
                     @[$ruleName=>$call] = $presets;
                     if(($param === null && $required === false) || $call === null){ 
-                        if(in_array($ruleName,['int','bool','float','string']) && is_null($ruleParam)){
+                        if(in_array($ruleName,['int','bool','float','string']) && is_null($ruleParam) == false){
                             $params[$field] = $ruleParam;
                         }
                         continue; 
