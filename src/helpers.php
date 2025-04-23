@@ -6,6 +6,17 @@
 // +----------------------------------------------------------------------
 // | Author:  <11247005@qq.com>  Date: 2025/03/16
 // +----------------------------------------------------------------------
+/**
+ * 扩展方法 
+ * 用于兼容 (PHP 8 <= 8.1.0) 7.2+
+ * 判断是否可循环数组
+ */
+if(!function_exists('array_is_list')){
+    function array_is_list($arg)
+    {
+        return $arg === [] || (array_keys($arg) === range(0, count($arg) - 1));
+    }
+}
 
 /**
 * 验证和处理表单数据
@@ -50,7 +61,8 @@ if(!function_exists('useValidate')){
             },
             // 常用处理
             'xss'=>function($field,$param,$args,$msg=''){
-                return $param = strip_tags($param,$args);
+                $replace = str_replace(["'",'"',';','--','%','_','(',')'],'',$param);
+                return strip_tags($replace,$args);
             },
             'html'=>function($field,$param,$args,$msg=''){
                 return htmlspecialchars($param,$args ?? (ENT_COMPAT | ENT_HTML401));
@@ -205,6 +217,13 @@ if(!function_exists('useValidate')){
                 throw new Exception(sprintf($msg,$field));
             },
             'length'=>function($field,$param,$args,$msg='%s 字段长度必须%s~%s个字符'){
+                $conf = explode(',',$args);$min = min($conf);$max = max($conf);$len = mb_strlen($param);
+                if($len >= $min && $len <= $max){
+                    return $param;
+                }
+                throw new Exception(sprintf($msg,$field,$min,$max));
+            },
+            'len'=>function($field,$param,$args,$msg='%s 字段长度必须%s~%s个字符'){
                 $conf = explode(',',$args);$min = min($conf);$max = max($conf);$len = mb_strlen($param);
                 if($len >= $min && $len <= $max){
                     return $param;
