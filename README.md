@@ -1,5 +1,7 @@
 # Youloge.validate Webman 表单验证器(PHP7.2+)
 
+![Brightgreen](https://img.shields.io/badge/@-micateam-brightgreen.svg) ![Packagist](https://img.shields.io/packagist/v/youloge/webman.validate) ![Languages](https://img.shields.io/github/languages/top/youfeed/webman.validate.svg) ![Packagist Downloads](https://img.shields.io/packagist/dt/youloge/webman.validate) ![License ](https://img.shields.io/packagist/l/youloge/webman.validate)
+
 > Webman 表单验证器是：[Github Youloge.Tool](https://github.com/youfeed/webman.tool) 的子函数之一，如果安装了`webman.tool`就不需要再安装`webman.validate`了。经过`webman.validate` 过滤处理后的表单，基本可以达到入库要求，可以大大简化逻辑处理。
 
 - 支持数据预处理链式处理
