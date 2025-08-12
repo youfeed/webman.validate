@@ -166,7 +166,7 @@ if(!function_exists('useValidate')){
             'min'=>function($field,$param,$args,$msg='%s 字段数字不能小与%s'){
                 $min = min(explode(',',$args));
                 if(is_numeric($param) && $param >= $min){
-                    return $param;
+                    return (int)$param;
                 }
                 throw new Exception(sprintf($msg,$field,$min));
                 
@@ -174,14 +174,14 @@ if(!function_exists('useValidate')){
             'max'=>function($field,$param,$args,$msg='%s 字段数字不能大于%s'){
                 $max = max(explode(',',$args));
                 if(is_numeric($param) && ($param <= $max)){
-                    return $param;
+                    return (int)$param;
                 }
                 throw new Exception(sprintf($msg,$field,$max));
             },
             'between' => function($field,$param,$args,$msg='%s 字段数字必须在%s和%s之间'){
                 $conf = explode(',',$args);$min = min($conf);$max = max($conf);
                 if(is_numeric($param) && $param >= $min && $param <= $max){
-                    return $param;
+                    return (int)$param;
                 }
                 throw new Exception(sprintf($msg,$field,$min,$max));
             },
@@ -200,7 +200,7 @@ if(!function_exists('useValidate')){
             },
             'digit' => function($field,$param,$args,$msg='%s 字段值必须是数字'){
                 if(ctype_digit($param)){
-                    return $param;
+                    return (int)$param;
                 }
                 throw new Exception(sprintf($msg,$field));
             },
