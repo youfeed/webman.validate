@@ -13,6 +13,7 @@
 
 [Youloge.Validate](https://github.com/youfeed/webman.validate) Star我 `如果对你的项目有帮助` 欢迎打赏~
 
+- 1.3.0 [2025-08-12] 默认数据类型与默认值：数据类型修复为一致
 - 1.2.8 [2025-03-20] 基本数据类型`int:100`,`float:1.02`,`bool:false`,`string:默认值` 提供默认值支持
 
 ###  安装使用

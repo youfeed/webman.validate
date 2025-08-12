@@ -37,16 +37,16 @@ if(!function_exists('useValidate')){
                 return $param;
             },
             'int'=>function($field,$param,$args,$msg=''){
-                return (int)($param)??$args;
+                return (int)($param??$args);
             },
             'bool'=>function($field,$param,$args,$msg=''){
-                return (bool)($param)??$args;
+                return (bool)($param??$args);
             },
             'float'=>function($field,$param,$args,$msg=''){
-                return (float)($param)??$args;
+                return (float)($param??$args);
             },
             'string'=>function($field,$param,$args,$msg=''){
-                return (string)($param)??$args;
+                return (string)($param??$args);
             },
             // 常用处理
             'xss'=>function($field,$param,$args,$msg=''){
