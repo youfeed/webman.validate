@@ -15,6 +15,7 @@
 
 [Youloge.Validate](https://github.com/youfeed/webman.validate) Star 我 `如果对你的项目有帮助` 欢迎打赏~
 
+- 1.3.3 [2025-08-14] 新增`array`和`object`数据类型
 - 1.3.1 [2025-08-12] 默认数据类型与默认值：数据类型修复为一致
 - 1.3.0 [2025-04-23] 添加`array_is_list`函数，兼容到 php7.2+
 - 1.2.8 [2025-03-20] 基本数据类型`int:100`,`float:1.02`,`bool:false`,`string:默认值` 提供默认值支持
@@ -48,6 +49,8 @@
 | bool     |              转为 bool 类型              |     bool:false     | 基本处理 |
 | float    |             转为 float 类型              |     float:1.2      | 基本处理 |
 | string   |             转为 string 类型             |     int:string     | 基本处理 |
+| array    |             转为 array 类型             |     array:[]       | 基本处理 |
+| object   |             转为 object 类型            |    object:{}       | 基本处理 |
 | join     | 数组转字符串：可以指定连接符号，默认逗号 |       join:@       | 基本处理 |
 | trim     |            去除参数两端空白符            |        trim        | 基本处理 |
 | xss      |   过滤特殊符号:支持不过滤(<b></b>标签)   |      xss:<b>       | 基本处理 |
