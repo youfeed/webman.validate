@@ -15,6 +15,7 @@
 
 [Youloge.Validate](https://github.com/youfeed/webman.validate) Star 我 `如果对你的项目有帮助` 欢迎打赏~
 
+- 1.4.0 [2025-10-25] 优化`required`规则，允许`0、'0'、false、数组`
 - 1.3.3 [2025-08-14] 新增`array`和`object`数据类型
 - 1.3.1 [2025-08-12] 默认数据类型与默认值：数据类型修复为一致
 - 1.3.0 [2025-04-23] 添加`array_is_list`函数，兼容到 php7.2+
