@@ -15,6 +15,7 @@
 
 [Youloge.Validate](https://github.com/youfeed/webman.validate) Star 我 `如果对你的项目有帮助` 欢迎打赏~
 
+- 1.4.2 [2025-11-11] 新增`sprintf`,`format`规则，格式化字符串
 - 1.4.0 [2025-10-25] 优化`required`规则，允许`0、'0'、false、数组`
 - 1.3.3 [2025-08-14] 新增`array`和`object`数据类型
 - 1.3.1 [2025-08-12] 默认数据类型与默认值：数据类型修复为一致
@@ -52,6 +53,10 @@
 | string   |             转为 string 类型             |     int:string     | 基本处理 |
 | array    |             转为 array 类型             |     array:[]       | 基本处理 |
 | object   |             转为 object 类型            |    object:{}       | 基本处理 |
+| upper   |             转为 大写字母           |    upper       | 基本处理 |
+| lower   |             转为 小写字母            |    lower       | 基本处理 |
+| sprintf   |             格式化字符串            |    sprintf:%.2f       | 基本处理 |
+| format   |             格式化字符串            |    sprintf:%.4f       | 基本处理 |
 | join     | 数组转字符串：可以指定连接符号，默认逗号 |       join:@       | 基本处理 |
 | trim     |            去除参数两端空白符            |        trim        | 基本处理 |
 | xss      |   过滤特殊符号:支持不过滤(<b></b>标签)   |      xss:<b>       | 基本处理 |
@@ -89,7 +94,7 @@
 - =============================
 - = 过滤规则分为`预处理`和`验证规则`
 - =============================
-- = `基本处理:` required int bool float string join trim upper lower xss html
+- = `基本处理:` required int bool float string join trim upper lower sprintf format  xss html
 - = `常用验证:` email mobile url ip date time idcard regex test
 - = `数字相关:` min max between
 - = `字符相关:` start end digit alpha alphanum length
@@ -163,7 +168,7 @@ $rules =[
      'type' =>'required|in:1,2,3', // 必填，只能是1,2,3,不能是其他值
      'status' => 'required|int|not:0,99,100', // 必填，并转换成整数，不能是0,99,100
      'share' => 'required|bool', // 必填，并转换成布尔值
-     'price' => 'required|floot|max:100', // 必填，并转换成浮点数 最大100
+     'price' => 'required|float|format:%.2f|max:100', // 必填，并转换成浮点数 并格式化保留2位小数 最大100
      'created' => 'required|date:Y-m-d H:i', // 必填，日期格式(默认为：Y-m-d H:i:s)
      'tags' => 'required|count:1,6', // 必填，需要1~6个标签 [`相同键 只生效最后一个哦`]
      // 'tags' =>['required|length:2,20'], //  数组的每个值需要2-20个字符 [`相同键 只生效最后一个哦`]
