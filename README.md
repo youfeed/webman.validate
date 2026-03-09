@@ -1,10 +1,12 @@
-# Youloge.validate Webman 表单验证器(PHP7.2+)
+# Youloge.validate Webman 高级表单验证器(PHP7.2+)
 
 ![Brightgreen](https://img.shields.io/badge/@-micateam-brightgreen.svg) ![Packagist](https://img.shields.io/packagist/v/youloge/webman.validate) ![Languages](https://img.shields.io/github/languages/top/youfeed/webman.validate.svg) ![Packagist Downloads](https://img.shields.io/packagist/dt/youloge/webman.validate) ![License ](https://img.shields.io/packagist/l/youloge/webman.validate)
 
-> Webman 表单验证器是：[Github Youloge.Tool](https://github.com/youfeed/webman.tool) 的子函数之一，如果安装了`webman.tool`就不需要再安装`webman.validate`了。经过`webman.validate` 过滤处理后的表单，基本可以达到入库要求，可以大大简化逻辑处理。
+> Webman 表单验证器是：[Github Youloge.Tool](https://github.com/youfeed/webman.tool) 的子函数之一，如果安装了`webman.tool`就不需要再安装`webman.validate`了。经过`webman.validate` 过滤处理后的表单，基本可以达到入库要求，可以大大简化逻辑处理。[2.0.0+ 版本进行了重写 现在处理可以处理更加复杂的表单且不需要进行多次验证，在一个验证规则中即可处理任意复杂度的数据]
 
-- 支持数据预处理链式处理
+- [新]支持自定义匿名函数处理
+- [新]支持数据流式流转处理
+- 支持数据链式预处理处理
 - 支持`对象`和`数组`数据验证
 - 支持过滤，仅保留指定字段
 - 支持自定义错误提示
@@ -15,6 +17,7 @@
 
 [Youloge.Validate](https://github.com/youfeed/webman.validate) Star 我 `如果对你的项目有帮助` 欢迎打赏~
 
+- 2.0.1 [2026-03-07] 新增`流式处理 [M,N,Q]`,新增`callable闭包`自定义处理函数
 - 1.4.2 [2025-11-11] 新增`sprintf`,`format`规则，格式化字符串
 - 1.4.0 [2025-10-25] 优化`required`规则，允许`0、'0'、false、数组`
 - 1.3.3 [2025-08-14] 新增`array`和`object`数据类型
@@ -30,7 +33,7 @@
 
 ### 使用说明
 
-验证规则: `|`,`:`,`,`,`#`
+验证规则: `|`,`:`,`,`,`#`,`[]`
 
 - `|` 分割多个规则
 - `:` 规则参数 `,`多个参数用逗号分隔
@@ -92,13 +95,14 @@
 ---
 
 - =============================
-- = 过滤规则分为`预处理`和`验证规则`
+- = 过滤规则分为`预处理`和`验证规则` 新增`闭包函数`
 - =============================
 - = `基本处理:` required int bool float string join trim upper lower sprintf format  xss html
 - = `常用验证:` email mobile url ip date time idcard regex test
 - = `数字相关:` min max between
 - = `字符相关:` start end digit alpha alphanum length
 - = `取值相关:` in not count
+- = `闭包函数:` function($field,$value){}
 - =============================
 
 ---
@@ -112,13 +116,18 @@ $params = [
 ];
 $rules =[
      'username' => 'required|trim|lower|email', // 必填，去除空格，转小写，邮箱格式
-     'password' => 'required|length:6,20', // 必填，长度6-20
+     'password' => function($field,$value){
+          // 验证不通过返回 `Exception` 即可
+          if(count($value) < 8){
+               throw new Exception("密码长度不足~");
+          }
+          // 验证通过 并处理数据
+          return md5($value); 
+     }
 ];
 
 @['err'=>$err,'msg'=>$msg] = $data = useValidator($params,$rules,$filter=true);
-if($err === 400){
-     return json(['err'=>400,'msg'=>$msg]);
-}
+if($err === 400) return json(['err'=>400,'msg'=>$msg]);
 
 ```
 
@@ -170,10 +179,12 @@ $rules =[
      'share' => 'required|bool', // 必填，并转换成布尔值
      'price' => 'required|float|format:%.2f|max:100', // 必填，并转换成浮点数 并格式化保留2位小数 最大100
      'created' => 'required|date:Y-m-d H:i', // 必填，日期格式(默认为：Y-m-d H:i:s)
-     'tags' => 'required|count:1,6', // 必填，需要1~6个标签 [`相同键 只生效最后一个哦`]
+     // 'tags' => 'required|count:1,6', // 必填，需要1~6个标签 [`相同键 只生效最后一个哦`]
      // 'tags' =>['required|length:2,20'], //  数组的每个值需要2-20个字符 [`相同键 只生效最后一个哦`]
      // 'tags' =>'required|join:-', // 使用-符号连接 [`相同键 只生效最后一个哦`]
-     // 注意这个规则是数组-对象，所以下面的规则会循环验证数组内的对象
+     // 当验证规则是数组且不止一个规则则可以写成流式处理(将上面针对tags的规则组成一个规则)
+     'tags'=>['required|count:1,6',['required|length:2,20','required|join:@']],
+     // 注意这个规则是[数组对象]，所以下面的规则会循环验证数组内的对象
      'list' => [
           [
                'name'=>'required|string', // 必填，并转换成字符串
@@ -181,7 +192,7 @@ $rules =[
                'mail'=>'required|end:@qq.com', // 必填，必须以@qq.com结尾
           ]
      ],
-     // 这个规则是对象，所以下面的规则会验证对象
+     // 这个规则是[单对象]，所以下面的规则会验证对象
      'info' => [
           'origin'=>'required|url', // 必填，需要为url格式
           'ip'=>'required|ip', // 必填，需要为ip格式
@@ -195,27 +206,34 @@ if($err === 400){
 
 ```
 
-### 特殊规则
+### 流式处理
 
-> 表单数组验证：要实现比如一个`label`数组字段, 要求
+> 之前想对一个字段进行复杂操作，需要写第一步，第二步，第三步...,现在直接可以写成一维数组形式，规则：`['int:100'] 数组只有一个规则代表：数组按照改规则处理`，当规则`不止一个`按照自动展开规则，再按照从左到右依次验证处理。
 
-- 数组需要`1~6个标签`
-- 且每个标签需要`至少2-20个字符`
-- 最终使用`-`符号连接，你需要这么写
+- 数组需要 `1~6个标签`
+- 每个标签需要 `至少2-20个字符`
+- 每个标签 是否包含违规字符
+- 最终使用`,`符号连接成字符串，正式项目表单会比这还要复杂，现在可以像以下这么写。
 
 ```php
-$rule_one = ['label'=>'required|count:1,6']; // 必填，需要1~6个标签
-$rule_two = ['label'=>['length:2,20']]; // 数组的每个值需要2-20个字符
-$rule_three = ['label'=>'join:-']; // 使用-符号连接
-
-@['err'=>$err,'msg'=>$msg] = $data_one = useValidator($params,$rule_one,true);
+$rule_one = ['label'=>'required|count:1,6']; // 验证整个 label字段 满足required|count:1,6即可
+$rule_two = ['label'=>['length:2,20']]; // 循环验证 label字段 每个字段都验证 length:2,20
+// 注意：数组规则(多个 大于1)时候： 字符串规则 数组符号[]包裹规则  
+@['err'=>$err,'msg'=>$msg] = $data_one = useValidator($params,[
+     'label'=>[
+          'required|count:1,6', 
+          ['length:2,20'],
+          [function($field,$value){
+               if(useDetection($value)){
+                    return $value;
+               }
+               throw new Exception("包含违禁词~");
+          }],
+          'join:,'
+     ]
+]);
 if($err === 400){ return json(['err'=>400,'msg'=>$msg]); }
-// 用第一步的结果 作为第二步的验证规则 第三个参数为false 不剔除规则外字段
-@['err'=>$err,'msg'=>$msg] = $data_two = useValidator($data_one,$rule_two,false);
-if($err === 400){ return json(['err'=>400,'msg'=>$msg]); }
-// 用第二步的结果 作为第三步的验证规则 第三个参数为false 不剔除规则外字段
-@['err'=>$err,'msg'=>$msg] = $data_three = useValidator($data_two,$rule_three,false);
-if($err === 400){ return json(['err'=>400,'msg'=>$msg]); }
+// 验证通过输出 是一个逗号连起来的长字符串
 
 ```
 
