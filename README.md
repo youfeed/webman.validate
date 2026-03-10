@@ -8,10 +8,9 @@
 - [新]支持数据流式流转处理
 - 支持数据链式预处理处理
 - 支持`对象`和`数组`数据验证
-- 支持过滤，仅保留指定字段
 - 支持自定义错误提示
 - 支持`字段过滤`，仅返回指定验证字段
-- 对上次验证器处理结果进行再次过滤，可以实现复杂表单处理
+- 可以对任意复杂表单进行处理过滤转化并合并结果
 
 ### 项目地址
 
@@ -19,7 +18,7 @@
 
 - 2.0.1 [2026-03-07] 新增`流式处理 [M,N,Q]`,新增`callable闭包`自定义处理函数
 - 1.4.2 [2025-11-11] 新增`sprintf`,`format`规则，格式化字符串
-- 1.4.0 [2025-10-25] 优化`required`规则，允许`0、'0'、false、数组`
+- 1.4.0 [2025-10-25] 优化`required`规则，允许`0、'0'、false、[]、{}`
 - 1.3.3 [2025-08-14] 新增`array`和`object`数据类型
 - 1.3.1 [2025-08-12] 默认数据类型与默认值：数据类型修复为一致
 - 1.3.0 [2025-04-23] 添加`array_is_list`函数，兼容到 php7.2+
@@ -219,17 +218,18 @@ if($err === 400){
 $rule_one = ['label'=>'required|count:1,6']; // 验证整个 label字段 满足required|count:1,6即可
 $rule_two = ['label'=>['length:2,20']]; // 循环验证 label字段 每个字段都验证 length:2,20
 // 注意：数组规则(多个 大于1)时候： 字符串规则 数组符号[]包裹规则  
+// 如果数组规则只有一个 那个它表示 对数组进行 循环验证 这是 V2 版本的新特性  
 @['err'=>$err,'msg'=>$msg] = $data_one = useValidator($params,[
      'label'=>[
-          'required|count:1,6', 
-          ['length:2,20'],
-          [function($field,$value){
+          'required|count:1,6', // 先验证 label 必填 在验证 数组长度 1-6 之间
+          ['length:2,20'], // 验证 label数组每个元素的内容 长度 2-20 之间
+          [function($field,$value){ // 验证 label数组每个元素的 内容
                if(useDetection($value)){
                     return $value;
                }
                throw new Exception("包含违禁词~");
           }],
-          'join:,'
+          'join:,' // 对 label数组元素 使用 , 号连接
      ]
 ]);
 if($err === 400){ return json(['err'=>400,'msg'=>$msg]); }
