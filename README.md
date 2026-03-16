@@ -125,7 +125,7 @@ $rules =[
      }
 ];
 
-@['err'=>$err,'msg'=>$msg] = $data = useValidator($params,$rules,$filter=true);
+@['err'=>$err,'msg'=>$msg] = $data = useValidate($params,$rules,$filter=true);
 if($err === 400) return json(['err'=>400,'msg'=>$msg]);
 
 ```
@@ -198,7 +198,7 @@ $rules =[
      ]
 ];
 $params = $request->all();
-@['err'=>$err,'msg'=>$msg] = $data = useValidator($params,$rules,$filter=true);
+@['err'=>$err,'msg'=>$msg] = $data = useValidate($params,$rules,$filter=true);
 if($err === 400){
      return json(['err'=>400,'msg'=>$msg]);
 }
@@ -219,7 +219,7 @@ $rule_one = ['label'=>'required|count:1,6']; // 验证整个 label字段 满足r
 $rule_two = ['label'=>['length:2,20']]; // 循环验证 label字段 每个字段都验证 length:2,20
 // 注意：数组规则(多个 大于1)时候： 字符串规则 数组符号[]包裹规则  
 // 如果数组规则只有一个 那个它表示 对数组进行 循环验证 这是 V2 版本的新特性  
-@['err'=>$err,'msg'=>$msg] = $data_one = useValidator($params,[
+@['err'=>$err,'msg'=>$msg] = $data_one = useValidate($params,[
      'label'=>[
           'required|count:1,6', // 先验证 label 必填 在验证 数组长度 1-6 之间
           ['length:2,20'], // 验证 label数组每个元素的内容 长度 2-20 之间
