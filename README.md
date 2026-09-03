@@ -16,6 +16,7 @@
 
 [Youloge.Validate](https://github.com/youfeed/webman.validate) Star 我 `如果对你的项目有帮助` 欢迎打赏~
 
+- 2.0.8 [2026-09-04] 优化`null、空字符串 / 空数组`都启用默认值，适合很多表单场景）
 - 2.0.1 [2026-03-07] 新增`流式处理 [M,N,Q]`,新增`callable闭包`自定义处理函数
 - 1.4.2 [2025-11-11] 新增`sprintf`,`format`规则，格式化字符串
 - 1.4.0 [2025-10-25] 优化`required`规则，允许`0、'0'、false、[]、{}`

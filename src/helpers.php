@@ -6,32 +6,32 @@
 // +----------------------------------------------------------------------
 // | Author:  <11247005@qq.com>  Date: 2025/03/16
 // +----------------------------------------------------------------------
-/**
- * 扩展方法 
- * 用于兼容 (PHP 8 <= 8.1.0) 7.2+
- * 判断是否可循环数组
- */
 if (!function_exists('array_is_list')) {
+    /**
+     * 扩展方法 
+     * 用于兼容 (PHP 8 <= 8.1.0) 7.2+
+     * 判断是否可循环数组
+     */
     function array_is_list($arg)
     {
         return $arg === [] || (array_keys($arg) === range(0, count($arg) - 1));
     }
 }
 
-/**
- * 验证和处理表单数据
- *
- * 可以通过多个调用方式 实现复杂处理
- *
- * @param object $params 表单数据
- * @return object $rules 验证规则
- * @return bool $intersect 是否只返回验证通过的数据
- * @return array $result 验证结果
- * @throws Exception 验证失败抛出异常 ['err'=>400,'msg'=>'错误提示']
- * @example
- */
 
 if (!function_exists('useValidate')) {
+    /**
+     * 验证和处理表单数据
+     *
+     * 可以通过多个调用方式 实现复杂处理
+     *
+     * @param array $params 表单数据
+     * @param array $rules 验证规则
+     * @param bool $intersect=true 是否只返回验证通过的数据
+     * @return array $result 验证结果
+     * @throws Exception 验证失败抛出异常 ['err'=>400,'msg'=>'错误提示']
+     * @example
+     */
     function useValidate($params, $rules, $intersect = true)
     {
         $presets = [
@@ -61,23 +61,22 @@ if (!function_exists('useValidate')) {
                 return $param;
             },
             'int' => function ($field, $param, $args, $msg = '') {
-                return (int) ($param ?? $args);
+                return (int)(($param === null || $param === '') ? $args : $param);
             },
             'bool' => function ($field, $param, $args, $msg = '') {
-                return (bool) ($param ?? $args);
+                return (bool)(($param === null || $param === '') ? $args : $param);
             },
             'float' => function ($field, $param, $args, $msg = '') {
-                return (float) ($param ?? $args);
+                return (float)(($param === null || $param === '') ? $args : $param);
             },
             'string' => function ($field, $param, $args, $msg = '') {
-                return (string) ($param ?? $args);
+                return (string)(($param === null || $param === '') ? $args : $param);
             },
             'array' => function ($field, $param, $args, $msg = '') {
-                return (array) ($param ?? (json_decode("[$args]",true)));
+                return (array)(($param === null || $param === '' || empty($param)) ? json_decode("[$args]",true) : $param);
             },
             'object' => function ($field, $param, $args, $msg = '') {
-                // return [$field, $param, $args, $msg];
-                return (object) ($param ?? (json_decode("{{$args}}",false)));
+                return (object)(($param === null || $param === '' || empty($param)) ? json_decode("{{$args}}",false) : $param);
             },
             'sprintf' => function ($field, $param, $args = '', $msg = '') {
                 return sprintf($args, $param);
